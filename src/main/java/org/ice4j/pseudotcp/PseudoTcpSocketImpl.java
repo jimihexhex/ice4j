@@ -705,7 +705,11 @@ class PseudoTcpSocketImpl
 
     // FIXME: consider larger thread pool and/or making it configurable
     private final static ScheduledThreadPoolExecutor clockExecutor
-        = new ScheduledThreadPoolExecutor(1);
+        = new ScheduledThreadPoolExecutor(1, r -> {
+          Thread t = new Thread(r, "ice4j.clockExecutor");
+          t.setDaemon(true);
+          return t;
+        });
 
     private volatile ScheduledFuture<?> currentlyScheduledClockTask = null;
 
